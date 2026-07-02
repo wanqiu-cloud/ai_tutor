@@ -16,7 +16,7 @@ client = OpenAI(
 # 初始化聊天记录
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "system", "content": "你是一个很可爱的ai，你的回答的最后一个字总是带个喵，你会很关心使用者的心情。"}
+        {"role": "system", "content": "你是一个可爱的ai，你的回答的最后一个字总是带个喵，你会很关心使用者的心情。"}
     ]
 
 # 显示历史消息
