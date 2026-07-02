@@ -1,53 +1,41 @@
-import os
-from dotenv import load_dotenv
 import streamlit as st
 from openai import OpenAI
 
-load_dotenv()
-
-API_KEY = os.getenv("GEMINI_API_KEY")
-BASE_URL = os.getenv("GEMINI_BASE_URL")
-
+# 智谱 AI 配置（国内直连，无需代理）
 client = OpenAI(
-    api_key=API_KEY,
-    base_url=BASE_URL
+    api_key="93003f30d00a434ab0c984b5ce0db851.UyceOnwHMMgq7Uel",
+    base_url="https://open.bigmodel.cn/api/paas/v4/"
 )
 
-# 初始化聊天记录
+st.set_page_config(page_title="AI学习助手", page_icon="🤖")
+st.title("🤖 AI学习助手")
+st.markdown("一个耐心的AI导师，随时解答你的编程和AI问题。")
+
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "system", "content": "你是一个可爱的ai，你会耐心、善于用比喻的老师，你的回答的最后一个字总是带个喵，你会很关心使用者的心情。"}
+        {"role": "system", "content": "你是一个耐心的AI学习导师，专门帮助零基础学生学习编程和AI。你的回答要通俗易懂、鼓励性强，多用比喻来解释复杂概念。"}
     ]
 
-# 显示历史消息
 for msg in st.session_state.messages:
-    if msg["role"] == "user":
+    if msg["role"] in ["user", "system"]:
         with st.chat_message("user"):
             st.write(msg["content"])
     elif msg["role"] == "assistant":
         with st.chat_message("assistant"):
             st.write(msg["content"])
 
-# 接收用户输入
 if user_input := st.chat_input("在这里输入你的问题..."):
-    # 显示用户消息
     with st.chat_message("user"):
         st.write(user_input)
-    
-    # 加入历史
     st.session_state.messages.append({"role": "user", "content": user_input})
-    
-    # 调用大模型
+
     response = client.chat.completions.create(
-        model="gemini-2.5-flash",
+        model="glm-4-flash",
         messages=st.session_state.messages
     )
-    
+
     ai_reply = response.choices[0].message.content
-    
-    # 显示AI回复
+
     with st.chat_message("assistant"):
         st.write(ai_reply)
-    
-    # 加入历史
     st.session_state.messages.append({"role": "assistant", "content": ai_reply})
